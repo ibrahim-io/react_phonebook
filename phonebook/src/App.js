@@ -18,6 +18,13 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+    for(let i=0; i < persons.length; i++) {
+      if(persons[i].name === newName) {
+        window.alert(`${newName} is already a name found in the phonebook`)
+        setNewName('')
+        return
+      }
+    }
     setPersons(persons.concat({name: newName}))
     setNewName('')
   }
