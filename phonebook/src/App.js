@@ -34,9 +34,19 @@ const App = () => {
     event.preventDefault()
     for(let i=0; i < persons.length; i++) {
       if(persons[i].name === newName) {
-        window.alert(`${newName} is already a name found in the phonebook`)
-        setNewName('')
-        return
+        const message = `${newName} is already added to the phonebook, replace the old number with a new one?`
+        if(window.confirm(message)) {
+          const changedPerson = { ...persons[i], number: newNumber}
+          personService
+            .update(persons[i].id,changedPerson)
+            .then(response => {
+              setPersons(persons.map(p => p.id !== persons[i].id ? p : response.data))
+            })
+
+            setNewName('')
+            setNewNumber('')
+            return
+        }
       } else if (persons[i].number === newNumber) {
         window.alert(`${newNumber} is already a number found in the phonebook`)
         setNewNumber('')
