@@ -4,10 +4,13 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 
 
 const App = () => {
+  const [successNotif, setSuccessNotif] = useState('')
+  const [errorNotif, setErrorNotif] = useState('')
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -41,8 +44,12 @@ const App = () => {
             .update(persons[i].id,changedPerson)
             .then(response => {
               setPersons(persons.map(p => p.id !== persons[i].id ? p : response.data))
+            }).catch(err => {
+              setErrorNotif(`Information of ${newName} has been removed from our server`)
             })
-
+            setTimeout(() => {
+              setErrorNotif('')
+            }, 5000)
             setNewName('')
             setNewNumber('')
             return
@@ -59,6 +66,10 @@ const App = () => {
       setNewName('')
       setNewNumber('')
     })
+    setSuccessNotif(`Added ${newName}`)
+    setTimeout(() => {
+      setSuccessNotif('')
+    }, 5000)
   }
 
   const deletePerson = (id, name) => {
@@ -72,6 +83,8 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={successNotif} notifType="success_notif" />
+      <Notification message={errorNotif} notifType="error_notif" />
       <Filter filterName={filterName} handleFilter={handleFilter} />
       <h2>Add a new person</h2>
       <PersonForm newName={newName} handleNameChange={handleNameChange}
